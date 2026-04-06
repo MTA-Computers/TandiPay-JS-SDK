@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TandiPay - Vanilla JS Example</title>
+    <link rel="stylesheet" href="../../src/vanilla/styles.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #f9fafb;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #111827;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            ring: 2px solid #4F46E5;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: none;
+        }
+        .result.show {
+            display: block;
+        }
+        .result pre {
+            margin: 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: #dc2626;
+            margin-top: 10px;
+            display: none;
+        }
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> TandiPay Payment Gateway</h1>
+        <p class="subtitle">Vanilla JavaScript Integration Example</p>
+        
+        <form id="payment-form">
+            <div class="form-group">
+                <label>Phone Number *</label>
+                <input type="tel" id="phone" placeholder="256712345678" required value="256712345678">
+            </div>
+            
+            <div class="form-group">
+                <label>Amount (UGX) *</label>
+                <input type="number" id="amount" placeholder="1000" required value="1500">
+            </div>
+            
+            <div class="form-group">
+                <label>Customer Name *</label>
+                <input type="text" id="customerName" placeholder="John Doe" required value="John Doe">
+            </div>
+            
+            <div class="form-group">
+                <label>Customer Email</label>
+                <input type="email" id="customerEmail" placeholder="john@example.com" value="john@example.com">
+            </div>
+            
+            <div id="payment-button-container"></div>
+            
+            <div class="error" id="error-message"></div>
+        </form>
+        
+        <div class="result" id="result">
+            <h3>Payment Result</h3>
+            <pre id="result-content"></pre>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../../src/vanilla/tandipay.browser.js"></script>
+    <script>
+        // Initialize TandiPay
+        const tandipay = new TandiPay({
+            apiKey: 'your-api-key-here',
+            environment: 'sandbox',
+            business: {
+                name: 'My Online Store',
+                description: 'Quality products at affordable prices'
+            }
+        });
+
+        // Create payment button
+        const buttonContainer = document.getElementById('payment-button-container');
+        
+        const paymentButton = document.createElement('button');
+        paymentButton.textContent = 'Pay Now';
+        paymentButton.className = 'tandipay-button tandipay-button-primary tandipay-button-large';
+        paymentButton.style.width = '100%';
+        
+        paymentButton.onclick = async () => {
+            // Get form values
+            const phone = document.getElementById('phone').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const customerName = document.getElementById('customerName').value;
+            const customerEmail = document.getElementById('customerEmail').value;
+            
+            // Hide previous results
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error-message').classList.remove('show');
+            
+            // Disable button
+            paymentButton.disabled = true;
+            paymentButton.textContent = 'Processing...';
+            
+            try {
+                // Initialize payment
+                const result = await tandipay.initializePayment({
+                    phone: phone,
+                    amount: amount,
+                    customer: {
+                        name: customerName,
+                        email: customerEmail
+                    },
+                    returnUrl: window.location.href,
+                    autoRedirect: false, // Don't auto-redirect, we'll handle it
+                    metadata: {
+                        timestamp: new Date().toISOString(),
+                        source: 'vanilla-js-example'
+                    }
+                });
+                
+                console.log('Payment initialized:', result);
+                
+                // Open payment in new tab
+                const paymentWindow = window.open(result.paymentLink, '_blank');
+                
+                // Monitor for payment completion
+                const checkInterval = setInterval(async () => {
+                    if (paymentWindow && paymentWindow.closed) {
+                        clearInterval(checkInterval);
+                        
+                        try {
+                            // Verify payment
+                            const verification = await tandipay.verifyPayment(result.reference);
+                            
+                            if (verification.status === 'successful') {
+                                // Show success
+                                document.getElementById('result-content').textContent = JSON.stringify(verification, null, 2);
+                                document.getElementById('result').classList.add('show');
+                                
+                                // Show success toast
+                                showToast('Payment completed successfully!', 'success');
+                            } else {
+                                throw new Error('Payment was not successful');
+                            }
+                        } catch (error) {
+                            showToast(error.message, 'error');
+                            document.getElementById('error-message').textContent = error.message;
+                            document.getElementById('error-message').classList.add('show');
+                        }
+                    }
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Payment error:', error);
+                showToast(error.message, 'error');
+                document.getElementById('error-message').textContent = error.message;
+                document.getElementById('error-message').classList.add('show');
+            } finally {
+                paymentButton.disabled = false;
+                paymentButton.textContent = 'Pay Now';
+            }
+        };
+        
+        buttonContainer.appendChild(paymentButton);
+        
+        // Helper function to show toast notifications
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `tandipay-toast tandipay-toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+        
+        // Example: Generate reference manually
+        console.log('Generated reference:', tandipay.generateReference('ORDER123'));
+    </script>
+</body>
+</html>

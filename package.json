@@ -1,0 +1,50 @@
+{
+  "name": "tandipay-sdk",
+  "version": "1.0.2",
+  "description": "TandiPay Payment Gateway SDK for Node.js, React, Vue, and Vanilla JavaScript",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "browser": "dist/tandipay.min.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf lib dist",
+    "build": "npm run clean && npm run build:lib",
+    "build:lib": "babel src --out-dir lib --copy-files --ignore 'src/react/**','src/vue/**','src/adapters/**','src/**/*.test.js'",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests specified\"",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "payment",
+    "tandipay",
+    "gateway",
+    "react",
+    "vue",
+    "nodejs",
+    "javascript",
+    "mobile-money"
+  ],
+  "author": "Tandika Technologies <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tandika/tandipay-sdk"
+  },
+  "peerDependencies": {
+    "axios": ">=0.21.0"
+  },
+  "dependencies": {
+    "axios": "^1.5.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "rimraf": "^5.0.0"
+  },
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ]
+}

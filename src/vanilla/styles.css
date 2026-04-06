@@ -1,0 +1,214 @@
+/* TandiPay Default Styles */
+
+.tandipay-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+}
+
+.tandipay-button-primary {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  color: white;
+}
+
+.tandipay-button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+}
+
+.tandipay-button-secondary {
+  background: white;
+  color: #4F46E5;
+  border: 2px solid #4F46E5;
+}
+
+.tandipay-button-secondary:hover {
+  background: #F3F4F6;
+}
+
+.tandipay-button-small {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.tandipay-button-medium {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.tandipay-button-large {
+  padding: 14px 28px;
+  font-size: 16px;
+}
+
+.tandipay-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.tandipay-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: tandipay-spin 0.6s linear infinite;
+}
+
+@keyframes tandipay-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal Styles */
+.tandipay-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  animation: tandipay-fade-in 0.3s ease;
+}
+
+.tandipay-modal {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 700px;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: tandipay-slide-up 0.3s ease;
+}
+
+.tandipay-modal-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #E5E7EB;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tandipay-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #111827;
+}
+
+.tandipay-modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #6B7280;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.tandipay-modal-close:hover {
+  background: #F3F4F6;
+}
+
+.tandipay-modal-body {
+  flex: 1;
+  overflow: auto;
+}
+
+.tandipay-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Toast Notifications */
+.tandipay-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-family: sans-serif;
+  font-size: 14px;
+  z-index: 100000;
+  animation: tandipay-slide-in 0.3s ease;
+}
+
+.tandipay-toast-success {
+  background: #10B981;
+}
+
+.tandipay-toast-error {
+  background: #EF4444;
+}
+
+.tandipay-toast-info {
+  background: #3B82F6;
+}
+
+/* Animations */
+@keyframes tandipay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tandipay-slide-up {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes tandipay-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .tandipay-modal {
+    width: 95%;
+    height: 90%;
+  }
+  
+  .tandipay-button-medium {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
