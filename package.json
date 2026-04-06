@@ -1,6 +1,6 @@
 {
   "name": "tandipay-sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "TandiPay Payment Gateway SDK for Node.js, React, Vue, and Vanilla JavaScript",
   "main": "lib/index.js",
   "module": "lib/index.js",
