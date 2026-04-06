@@ -24,11 +24,11 @@
     "javascript",
     "mobile-money"
   ],
-  "author": "Tandika Technologies <your.email@example.com>",
+  "author": "Tandika Technologies <support@tandikatechnologies.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tandika/tandipay-sdk"
+    "url": "https://github.com/MTA-Computers/TandiPay-JS-SDK.git"
   },
   "peerDependencies": {
     "axios": ">=0.21.0"
